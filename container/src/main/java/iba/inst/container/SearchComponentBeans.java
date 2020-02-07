@@ -13,9 +13,7 @@ public class SearchComponentBeans {
     private String packageName;
 
     public SearchComponentBeans(String packageName) {
-        String cont  = (packageName == null || packageName.equals(""))
-                ? Main.class.getPackage().getName()
-                : packageName;
+        String cont  = (packageName == null) ? "" : packageName;
         this.packageName = cont;
         this.contextPath = cont.replace(".", "/");
     }
