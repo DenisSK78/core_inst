@@ -1,7 +1,6 @@
 package iba.inst.container;
 
 
-import iba.inst.Main;
 import iba.inst.anotation.ComponentBean;
 import org.reflections.Reflections;
 
@@ -25,6 +24,10 @@ public class SearchComponentBeans {
     public Set<Class<?>> getClassesByPackage() {
         Reflections reflections = new Reflections(packageName);
         return reflections.getTypesAnnotatedWith(ComponentBean.class);
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 }
 
