@@ -52,9 +52,6 @@ public class DiConfig {
                             field.set(o, mapBeans.get(simpleName));
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
-//                            throw new ContainerException(
-//                                    String.format("Exception injectComponent field %s in class %s",
-//                                            field.getName(), o.getClass().getName()));
                         }
                     }
                 }
