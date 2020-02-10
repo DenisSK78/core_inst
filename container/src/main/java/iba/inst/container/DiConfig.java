@@ -18,6 +18,7 @@ public class DiConfig {
 
     private Map<String, Object> mapBeans = new HashMap<>();
     private SearchComponentBeans compSet;
+    private List<Object> listBeans;
 
     public DiConfig(String packageName) {
         this.compSet = new SearchComponentBeans(packageName);
@@ -38,7 +39,6 @@ public class DiConfig {
     }
 
     private void addInjectComponent() {
-        List<Object> listBeans = new ArrayList<>(mapBeans.values());
         for(Object o : listBeans){
             Field[] fields = o.getClass().getDeclaredFields();
             for (Field field : fields){
@@ -76,12 +76,12 @@ public class DiConfig {
         }
         if (!isHasEmptyCon) throw new ContainerException(
                 String.format("Component class %s dos not have constructor without parameter", insClass.getName()));
+        listBeans = new ArrayList<>(mapBeans.values());
     }
 
 
     @SuppressWarnings("unchecked")
     public <E> E  lookUpByClass(Class<?> componentClass) {
-        List<Object> listBeans = new ArrayList<>(mapBeans.values());
         if (listBeans.stream().anyMatch(componentClass::isInstance)){
             return (E) listBeans.stream().filter(componentClass::isInstance).findFirst().get();
         } else throw new ContainerException(
