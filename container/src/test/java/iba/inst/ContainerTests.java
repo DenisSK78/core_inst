@@ -31,7 +31,7 @@ public class ContainerTests {
     public void InjectComponentTest(){
         DiConfig conf = new DiConfig("iba.inst");
         PuperTestClass pup = conf.lookUpByClass(PuperTestClass.class);
-//        Assert.assertNotNull(pup.getSuperTestClass());
+        Assert.assertEquals(pup.getSuperTestClass(), conf.lookUpByClass(SuperTestClass.class));
     }
 
 

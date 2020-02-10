@@ -1,31 +1,64 @@
 package iba.inst.container;
 
+import iba.inst.anotation.InjectComponent;
 import iba.inst.exception.ContainerException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class DiConfig {
 
-    private ArrayList<Object> listBeans = new ArrayList<>();
+    private Map<String, Object> mapBeans = new HashMap<>();
     private SearchComponentBeans compSet;
 
     public DiConfig(String packageName) {
         this.compSet = new SearchComponentBeans(packageName);
         try {
-            addClassesInContainer(compSet.getClassesByPackage());
+            Set<Class<?>> classSet = compSet.getClassesByPackage();
+            addClassesInContainer(classSet);
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
         }
+        addInjectComponent();
     }
 
     private void addClassesInContainer(Set<Class<?>> classesByPackage) throws IllegalAccessException,
             InstantiationException, InvocationTargetException {
         for(Class<?> forInstClass: classesByPackage){
            addClassesInContainer(forInstClass);
+        }
+    }
+
+    private void addInjectComponent() {
+        List<Object> listBeans = new ArrayList<>(mapBeans.values());
+        for(Object o : listBeans){
+            Field[] fields = o.getClass().getDeclaredFields();
+            for (Field field : fields){
+                Annotation[] declaredAnnotations = field.getDeclaredAnnotations();
+                for (Annotation an : declaredAnnotations){
+                    boolean equals = an.annotationType().equals(InjectComponent.class);
+                    if (equals){
+                        String simpleName = field.getType().getSimpleName();
+                        field.setAccessible(true);
+                        try {
+                            field.set(o, mapBeans.get(simpleName));
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                            throw new ContainerException(
+                                    String.format("Exception injectComponent field %s in class %s", field.getName(), o.getClass().getName()));
+                        }
+                    }
+                }
+                System.out.println(field.getName());
+            }
         }
     }
 
@@ -37,7 +70,7 @@ public class DiConfig {
             Parameter[] parameters = cons.getParameters();
             if (parameters.length == 0){
                 isHasEmptyCon = true;
-                listBeans.add(cons.newInstance());
+                mapBeans.put(insClass.getSimpleName(), cons.newInstance());
                 break;
             }
         }
@@ -48,6 +81,7 @@ public class DiConfig {
 
     @SuppressWarnings("unchecked")
     public <E> E  lookUpByClass(Class<?> componentClass) {
+        List<Object> listBeans = new ArrayList<>(mapBeans.values());
         if (listBeans.stream().anyMatch(componentClass::isInstance)){
             return (E) listBeans.stream().filter(componentClass::isInstance).findFirst().get();
         } else throw new ContainerException(
