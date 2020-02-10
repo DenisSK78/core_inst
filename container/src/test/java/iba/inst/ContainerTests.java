@@ -32,6 +32,7 @@ public class ContainerTests {
         DiConfig conf = new DiConfig("iba.inst");
         PuperTestClass pup = conf.lookUpByClass(PuperTestClass.class);
         Assert.assertEquals(pup.getSuperTestClass(), conf.lookUpByClass(SuperTestClass.class));
+        pup.whatIAm();
     }
 
 
