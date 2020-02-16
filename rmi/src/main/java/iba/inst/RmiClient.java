@@ -15,7 +15,7 @@ public class RmiClient {
 
         Context context = new InitialContext();
 
-        Enumeration<NameClassPair> e = context.list("rmi://localhost/");
+//        Enumeration<NameClassPair> e = context.list("rmi://localhost/");
 //        while (e.hasMoreElements())
 //            System.out.println(e.nextElement().getName());
 

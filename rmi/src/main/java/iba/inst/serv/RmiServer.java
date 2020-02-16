@@ -24,7 +24,9 @@ public class RmiServer {
 
 //        //by context
 //        Context context = new InitialContext();
-//        context.bind("rmi:rmiint", rmiInt);
-//        context.bind("rmi://localhost:1099/rmiint", rmiInt);
+//        context.bind("rmi:emp", employee);
+//        //or
+//        Context context = new InitialContext();
+//        context.bind("rmi://localhost:1099/emp", employee);
     }
 }
