@@ -135,3 +135,6 @@ local.properties
 .scala_dependencies
 .worksheet
 /container/container.iml
+/queue/queue.iml
+/rmi/rmi.iml
+/jndi/jndi.iml
